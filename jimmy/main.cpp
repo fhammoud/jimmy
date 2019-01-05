@@ -16,10 +16,12 @@ const string window_name = "Feed";
 const string filename = "/home/pi/projects/WiringPi/test_videos/solidYellowLeft.mp4";
 // const string filename = "/home/pi/projects/WiringPi/test_images/solidYellowLeft.jpg";
 
-int main(void)
+int main()
 {
 	// Initialize hardware
 	pi_init();
+
+	return 0;
 
 	//create a gui window:
 	namedWindow(window_name, WINDOW_NORMAL);

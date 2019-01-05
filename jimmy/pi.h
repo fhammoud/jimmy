@@ -6,6 +6,9 @@ void pi_init();
 // Initialize servo
 void servo_init();
 
+// Initialize motor
+void motor_init();
+
 // Turn LED on or off
 void set_light(int light, int mode);
 

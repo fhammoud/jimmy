@@ -14,8 +14,29 @@
 #define TRIGGER 23
 #define ECHO 24
 
+#define MOTOR_PIN_1 12
+#define MOTOR_PIN_2 16
+#define MOTOR_PIN_3 20
+#define MOTOR_PIN_4 21
+
 using namespace std;
 using namespace chrono;
+
+// Global variables
+const int steps = 8;
+const int pins = 4;
+
+const int motor_pins[] = { MOTOR_PIN_1, MOTOR_PIN_2, MOTOR_PIN_3, MOTOR_PIN_4 };
+const int motor_seq[steps][pins] = {
+	{ HIGH, LOW, LOW, LOW },
+	{ HIGH, HIGH, LOW, LOW },
+	{ LOW, HIGH, LOW, LOW },
+	{ LOW, HIGH, HIGH, LOW },
+	{ LOW, LOW, HIGH, LOW },
+	{ LOW, LOW, HIGH, HIGH },
+	{ LOW, LOW, LOW, HIGH },
+	{ HIGH, LOW, LOW, HIGH }
+};
 
 // Initialize wiring pi
 void pi_init()
@@ -31,9 +52,20 @@ void pi_init()
 	pinMode(TRIGGER, OUTPUT);
 	pinMode(ECHO, INPUT);
 
+	// Initialize motor pins
+	for (int pin : motor_pins)
+	{
+		pinMode(pin, OUTPUT);
+		digitalWrite(pin, LOW);
+	}
+
 	// Initialize servo
 	cout << "Initializing servo\n";
 	servo_init();
+	
+	// Initialize servo
+	cout << "Initializing motor\n";
+	motor_init();
 
 	// Test ultrasonic sensor
 	cout << "Testing ultrasonic sensor\n";
@@ -76,6 +108,29 @@ void servo_init()
 	// Set servo to neutral position
 	softPwmWrite(SERVO, 15);
 	delay(300);
+}
+
+// Initialize motor
+void motor_init()
+{
+	// Direction of motor
+	// 0 - Forward
+	// 1 - Reverse
+	const int dir = 0;
+
+	// Complete 1 revolution
+	for (int i = 0; i < 512; i++)
+	{
+		for (int j = 0; j < steps; j++)
+		{
+			const int step = abs(j - (steps - 1) * dir);
+			for (int k = 0; k < pins; k++)
+			{
+				digitalWrite(motor_pins[k], motor_seq[step][k]);
+			}
+			delay(1);
+		}
+	}
 }
 
 // Turn LED on or off
