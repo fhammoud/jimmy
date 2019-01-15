@@ -13,22 +13,21 @@ using namespace cv;
 // consts
 // Mat input, output; externed from vision.h
 const string window_name = "Feed";
-const string filename = "/home/pi/projects/WiringPi/test_videos/solidYellowLeft.mp4";
-// const string filename = "/home/pi/projects/WiringPi/test_images/solidYellowLeft.jpg";
+// const string filename = "/home/pi/projects/WiringPi/test_videos/solidYellowLeft.mp4";
+const string filename = "/home/pi/projects/WiringPi/test_images/solidYellowCurve.jpg";
 
 int main()
 {
 	// Initialize hardware
-	pi_init();
-
-	return 0;
+	// pi_init();
+	// return 0;
 
 	//create a gui window:
 	namedWindow(window_name, WINDOW_NORMAL);
 	resizeWindow(window_name, FRAME_WIDTH, FRAME_HEIGHT);
 
 	// Read image
-	/*input = imread(filename, IMREAD_COLOR);
+	input = imread(filename, IMREAD_COLOR);
 	if (input.empty())
 	{
 		cout << "Could not open or find the image!\n" << endl;
@@ -43,7 +42,7 @@ int main()
 	find_lanes(0, nullptr);
 
 	// Show image
-	imshow(window_name, output);*/
+	imshow(window_name, output);
 
 	// Read video
 	/*VideoCapture feed(0);
@@ -51,7 +50,7 @@ int main()
 	feed.set(CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
 	feed.set(CAP_PROP_FPS, FPS);*/
 	
-	VideoCapture feed(filename);
+	/*VideoCapture feed(filename);
 	if (!feed.isOpened())
 	{
 		cout << "Could not open video!\n" << endl;
@@ -84,7 +83,7 @@ int main()
 		// Break if key is pressed
 		if (waitKey(10) >= 0)
 			break;
-	}
+	}*/
 
 	cout << "Video done!\n";
 	waitKey(0);

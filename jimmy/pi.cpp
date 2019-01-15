@@ -159,5 +159,6 @@ double get_distance()
 
 	const auto elapsed = duration<double> (stop - start).count();
 
+	// Return distance
 	return elapsed * 170;
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-#define LANE_ROI_HEIGHT 0.6
+#define LANE_ROI_HEIGHT 0.65
 
 using namespace std;
 using namespace cv;
@@ -119,6 +119,13 @@ void find_lanes(int, void*)
 	// Draw left and right lines
 	line(output, Point(left_line_x1, left_line_y1), Point(left_line_x2, left_line_y2), Scalar(0, 0, 255), 3, LINE_AA);
 	line(output, Point(right_line_x1, right_line_y1), Point(right_line_x2, right_line_y2), Scalar(0, 0, 255), 3, LINE_AA);
+
+	// Draw direction line
+	const int center_line_x1 = input.cols / 2;
+	const int center_line_y1 = bottom;
+	const int center_line_x2 = (left_line_x2 + right_line_x2) / 2;
+	const int center_line_y2 = top;
+	line(output, Point(center_line_x1, center_line_y1), Point(center_line_x2, center_line_y2), Scalar(0, 0, 0), 3);
 }
 
 // Select road lanes region of interest

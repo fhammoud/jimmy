@@ -82,6 +82,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <AdditionalIncludeDirectories>/usr/local/include/opencv4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CAdditionalWarning>
+      </CAdditionalWarning>
+      <CppAdditionalWarning>
+      </CppAdditionalWarning>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
