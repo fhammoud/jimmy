@@ -7,14 +7,11 @@
 #define FRAME_HEIGHT 480
 #define FPS 30
 
-using namespace std;
-using namespace cv;
-
 // consts
 // Mat input, output; externed from vision.h
-const string window_name = "Feed";
+const std::string window_name = "Feed";
 // const string filename = "/home/pi/projects/WiringPi/test_videos/solidYellowLeft.mp4";
-const string filename = "/home/pi/projects/WiringPi/test_images/solidYellowCurve.jpg";
+const std::string filename = "/home/pi/projects/WiringPi/test_images/solidYellowCurve.jpg";
 
 int main()
 {
@@ -23,14 +20,14 @@ int main()
 	// return 0;
 
 	//create a gui window:
-	namedWindow(window_name, WINDOW_NORMAL);
-	resizeWindow(window_name, FRAME_WIDTH, FRAME_HEIGHT);
+	cv::namedWindow(window_name, cv::WINDOW_NORMAL);
+	cv::resizeWindow(window_name, FRAME_WIDTH, FRAME_HEIGHT);
 
 	// Read image
-	input = imread(filename, IMREAD_COLOR);
+	input = cv::imread(filename, cv::IMREAD_COLOR);
 	if (input.empty())
 	{
-		cout << "Could not open or find the image!\n" << endl;
+		std::cout << "Could not open or find the image!\n";
 		return -1;
 	}
 	output = input.clone();
@@ -45,22 +42,22 @@ int main()
 	imshow(window_name, output);
 
 	// Read video
-	/*VideoCapture feed(0);
-	feed.set(CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
-	feed.set(CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-	feed.set(CAP_PROP_FPS, FPS);*/
-	
-	/*VideoCapture feed(filename);
+	cv::VideoCapture feed(0);
+	feed.set(cv::CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
+	feed.set(cv::CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
+	feed.set(cv::CAP_PROP_FPS, FPS);
+
+	cv::VideoCapture feed(filename);
 	if (!feed.isOpened())
 	{
-		cout << "Could not open video!\n" << endl;
+		std::cout << "Could not open video!\n";
 		return -1;
 	}
 
 	// Select region of interest
-	const size_t rows = feed.get(CAP_PROP_FRAME_HEIGHT);
-	const size_t cols = feed.get(CAP_PROP_FRAME_WIDTH);
-	const Size size(cols, rows);
+	const size_t rows = feed.get(cv::CAP_PROP_FRAME_HEIGHT);
+	const size_t cols = feed.get(cv::CAP_PROP_FRAME_WIDTH);
+	const cv::Size size(cols, rows);
 	set_lane_roi(size);
 
 	// Process frames
@@ -81,12 +78,12 @@ int main()
 		imshow(window_name, output);
 
 		// Break if key is pressed
-		if (waitKey(10) >= 0)
+		if (cv::waitKey(10) >= 0)
 			break;
-	}*/
+	}
 
-	cout << "Video done!\n";
-	waitKey(0);
+	std::cout << "Video done!\n";
+	cv::waitKey(0);
 
 	return 0;
 }

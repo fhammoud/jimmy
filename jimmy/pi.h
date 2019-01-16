@@ -10,7 +10,7 @@ void servo_init();
 void motor_init();
 
 // Turn LED on or off
-void set_light(int light, int mode);
+void set_light(const int& light, const int& mode);
 
 // Get distance reading from ultrasonic sensor
 double get_distance();

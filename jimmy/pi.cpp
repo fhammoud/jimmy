@@ -19,9 +19,6 @@
 #define MOTOR_PIN_3 20
 #define MOTOR_PIN_4 21
 
-using namespace std;
-using namespace chrono;
-
 // Global variables
 const int steps = 8;
 const int pins = 4;
@@ -42,11 +39,11 @@ const int motor_seq[steps][pins] = {
 void pi_init()
 {
 	// Initialize wiring pi
-	cout << "Initializing Raspberry Pi modules\n";
+	std::cout << "Initializing Raspberry Pi modules\n";
 	wiringPiSetupSys();
 
 	// Set pin modes
-	cout << "Setting pin modes\n";
+	std::cout << "Setting pin modes\n";
 	pinMode(LED, OUTPUT);
 	pinMode(SERVO, OUTPUT);
 	pinMode(TRIGGER, OUTPUT);
@@ -60,25 +57,25 @@ void pi_init()
 	}
 
 	// Initialize servo
-	cout << "Initializing servo\n";
+	std::cout << "Initializing servo\n";
 	servo_init();
 	
 	// Initialize servo
-	cout << "Initializing motor\n";
+	std::cout << "Initializing motor\n";
 	motor_init();
 
 	// Test ultrasonic sensor
-	cout << "Testing ultrasonic sensor\n";
+	std::cout << "Testing ultrasonic sensor\n";
 	const double distance = get_distance();
-	cout << "Initial distance: " << distance << endl;
+	std::cout << "Initial distance: " << distance << std::endl;
 
 	// Test LED lights
-	cout << "Testing LED lights\n";
+	std::cout << "Testing LED lights\n";
 	set_light(LED, HIGH);
 	delay(500);
 	set_light(LED, LOW);
 
-	cout << "Initialization of Raspberry Pi modules complete!\n";
+	std::cout << "Initialization of Raspberry Pi modules complete!\n";
 }
 
 // Initialize servo
@@ -134,7 +131,7 @@ void motor_init()
 }
 
 // Turn LED on or off
-void set_light(int light, int mode)
+void set_light(const int& light, const int& mode)
 {
 	digitalWrite(light, mode);
 }
@@ -148,16 +145,16 @@ double get_distance()
 	digitalWrite(TRIGGER, LOW);
 
 	// Measure time
-	auto start = steady_clock::now();
-	auto stop = steady_clock::now();
+	auto start = std::chrono::steady_clock::now();
+	auto stop = std::chrono::steady_clock::now();
 
 	while (digitalRead(ECHO) == 0)
-		start = steady_clock::now();
+		start = std::chrono::steady_clock::now();
 
 	while (digitalRead(ECHO) == 1)
-		stop = steady_clock::now();
+		stop = std::chrono::steady_clock::now();
 
-	const auto elapsed = duration<double> (stop - start).count();
+	const auto elapsed = std::chrono::duration<double> (stop - start).count();
 
 	// Return distance
 	return elapsed * 170;
