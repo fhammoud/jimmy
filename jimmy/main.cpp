@@ -2,6 +2,7 @@
 #include "vision.h"
 #include <iostream>
 #include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 
 #define FRAME_WIDTH 640
 #define FRAME_HEIGHT 480
@@ -35,19 +36,21 @@ int main()
 	// Select region of interest
 	set_lane_roi(input.size());
 
-	// createTrackbar("Min Threshold:", window_name, &lowThreshold, max_lowThreshold, find_lanes);
+	// createTrackbar("Min Threshold:", window_name, &lowThreshold, max_threshold, find_lanes);
 	find_lanes(0, nullptr);
 
 	// Show image
+	const int font = cv::FONT_HERSHEY_SIMPLEX;
+	cv::putText(output, "Distance: ", cv::Point(10, 20), font, 0.75, cv::Scalar(0, 0, 0));
 	imshow(window_name, output);
 
 	// Read video
-	cv::VideoCapture feed(0);
+	/*cv::VideoCapture feed(0);
 	feed.set(cv::CAP_PROP_FRAME_WIDTH, FRAME_WIDTH);
 	feed.set(cv::CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT);
-	feed.set(cv::CAP_PROP_FPS, FPS);
+	feed.set(cv::CAP_PROP_FPS, FPS);*/
 
-	cv::VideoCapture feed(filename);
+	/*cv::VideoCapture feed(filename);
 	if (!feed.isOpened())
 	{
 		std::cout << "Could not open video!\n";
@@ -80,7 +83,7 @@ int main()
 		// Break if key is pressed
 		if (cv::waitKey(10) >= 0)
 			break;
-	}
+	}*/
 
 	std::cout << "Video done!\n";
 	cv::waitKey(0);

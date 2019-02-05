@@ -10,30 +10,10 @@
 // update the Property Pages - Build Events - Remote Post-Build Event command 
 // which uses gpio export for setup for wiringPiSetupSys
 #define	LED	17
-#define SERVO 18
+#define MOTOR 18
+#define SERVO 19
 #define TRIGGER 23
 #define ECHO 24
-
-#define MOTOR_PIN_1 12
-#define MOTOR_PIN_2 16
-#define MOTOR_PIN_3 20
-#define MOTOR_PIN_4 21
-
-// Global variables
-const int steps = 8;
-const int pins = 4;
-
-const int motor_pins[] = { MOTOR_PIN_1, MOTOR_PIN_2, MOTOR_PIN_3, MOTOR_PIN_4 };
-const int motor_seq[steps][pins] = {
-	{ HIGH, LOW, LOW, LOW },
-	{ HIGH, HIGH, LOW, LOW },
-	{ LOW, HIGH, LOW, LOW },
-	{ LOW, HIGH, HIGH, LOW },
-	{ LOW, LOW, HIGH, LOW },
-	{ LOW, LOW, HIGH, HIGH },
-	{ LOW, LOW, LOW, HIGH },
-	{ HIGH, LOW, LOW, HIGH }
-};
 
 // Initialize wiring pi
 void pi_init()
@@ -48,13 +28,7 @@ void pi_init()
 	pinMode(SERVO, OUTPUT);
 	pinMode(TRIGGER, OUTPUT);
 	pinMode(ECHO, INPUT);
-
-	// Initialize motor pins
-	for (int pin : motor_pins)
-	{
-		pinMode(pin, OUTPUT);
-		digitalWrite(pin, LOW);
-	}
+	pinMode(MOTOR, PWM_OUTPUT);
 
 	// Initialize servo
 	std::cout << "Initializing servo\n";
@@ -71,69 +45,69 @@ void pi_init()
 
 	// Test LED lights
 	std::cout << "Testing LED lights\n";
-	set_light(LED, HIGH);
+	set_light(HIGH);
 	delay(500);
-	set_light(LED, LOW);
+	set_light(LOW);
 
 	std::cout << "Initialization of Raspberry Pi modules complete!\n";
+	std::cout << "Waiting" << std::endl;
+	std::cin.get();
 }
 
 // Initialize servo
 void servo_init()
 {
 	// Set SERVO pin as PWM pin
-	softPwmCreate(SERVO, 0, 200);
+	softPwmCreate(SERVO, LOW, 200);
 
 	// Set servo to minimum angle
-	softPwmWrite(SERVO, 5);
-	delay(300);
+	softPwmWrite(SERVO, 15);
+	delay(1000);
 
 	// Make servo rotate from minimum angle to maximum angle
-	for (int i = 5; i <= 25; i++) {
+	for (int i = 15; i <= 20; i++) {
 		softPwmWrite(SERVO, i);
-		delay(20);
+		delay(200);
 	}
-	delay(500);
 
 	// Make servo rotate from maximum angle to minimum angle
-	for (int i = 25; i >= 5; i--) {
+	for (int i = 20; i >= 10; i--) {
 		softPwmWrite(SERVO, i);
-		delay(20);
+		delay(200);
 	}
-	delay(500);
 
 	// Set servo to neutral position
 	softPwmWrite(SERVO, 15);
-	delay(300);
+	delay(1000);
 }
 
 // Initialize motor
 void motor_init()
 {
-	// Direction of motor
-	// 0 - Forward
-	// 1 - Reverse
-	const int dir = 0;
+	pwmSetClock(384); // Clock at 50kHz (20us tick)
+	pwmSetRange(1000); // Range at 1000 ticks (20ms)
 
-	// Complete 1 revolution
-	for (int i = 0; i < 512; i++)
-	{
-		for (int j = 0; j < steps; j++)
-		{
-			const int step = abs(j - (steps - 1) * dir);
-			for (int k = 0; k < pins; k++)
-			{
-				digitalWrite(motor_pins[k], motor_seq[step][k]);
-			}
-			delay(1);
-		}
-	}
+	// Set to neutral
+	pwmWrite(MOTOR, 75);
+	delay(20);
+
+	// Set to max
+	pwmWrite(MOTOR, 100);
+	delay(20);
+
+	// Set to min
+	pwmWrite(MOTOR, 50);
+	delay(20);
+
+	// Set back to neautral
+	pwmWrite(MOTOR, 75);
+	delay(20);
 }
 
 // Turn LED on or off
-void set_light(const int& light, const int& mode)
+void set_light(const int& mode)
 {
-	digitalWrite(light, mode);
+	digitalWrite(LED, mode);
 }
 
 // Get distance reading from ultrasonic sensor
@@ -154,8 +128,8 @@ double get_distance()
 	while (digitalRead(ECHO) == 1)
 		stop = std::chrono::steady_clock::now();
 
-	const auto elapsed = std::chrono::duration<double> (stop - start).count();
+	const auto elapsed = std::chrono::duration<double>(stop - start).count();
 
 	// Return distance
-	return elapsed * 170;
+	return elapsed * 17000;
 }

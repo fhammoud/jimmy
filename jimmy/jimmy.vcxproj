@@ -49,23 +49,29 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <IncludePath>C:\Users\faris\AppData\Local\Microsoft\Linux\HeaderCache\1.0\1167483428\usr\local\include\opencv4;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <IncludePath>C:\Users\faris\AppData\Local\Microsoft\Linux\HeaderCache\1.0\1167483428\usr\local\include\opencv4;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
       <LibraryDependencies>wiringPi;opencv_core;opencv_highgui;opencv_imgproc;opencv_imgcodecs;opencv_videoio</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
-      <Command>gpio export 12 out; gpio export 16 out; gpio export 17 out; gpio export 18 out; gpio export 20 out; gpio export 21 out; gpio export 23 out; gpio export 24 in</Command>
+      <Command>gpio export 17 out; gpio export 18 out; gpio export 19 out; gpio export 23 out; gpio export 24 in</Command>
       <Message>export pins using the gpio utility so that we can execute the blink program without sudo</Message>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <Link>
-      <LibraryDependencies>wiringPi</LibraryDependencies>
+      <LibraryDependencies>wiringPi;opencv_core;opencv_highgui;opencv_imgproc;opencv_imgcodecs;opencv_videoio</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
-      <Command>gpio export 17 out</Command>
-      <Message>export pin 17 using the gpio utility so that we can execute the blink program without sudo</Message>
+      <Command>gpio export 17 out; gpio export 18 out; gpio export 19 out; gpio export 23 out; gpio export 24 in</Command>
+      <Message>export pins using the gpio utility so that we can execute the blink program without sudo</Message>
     </RemotePostBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>/usr/local/include/opencv4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -4,43 +4,43 @@
 
 #define LANE_ROI_HEIGHT 0.65
 
-using namespace std;
-using namespace cv;
+// using namespace std;
+// using namespace cv;
 
 // Global variables
-Mat input, output;
-Mat gray_scale, edges, mask;
+cv::Mat input, output;
+cv::Mat gray_scale, edges, mask;
 
 // Canny consts
-const int lowThreshold = 50;
-const int max_lowThreshold = 100;
+const int low_threshold = 50;
+const int max_threshold = 100;
 const int canny_ratio = 3;
 const int kernel_size = 3;
 
 // Hough consts
-const int rho = 1;
+const int rho = 2;
 const double theta = CV_PI / 180;
-const int hough_threshold = 50;
-const int min_line_length = 30;
-const int max_line_gap = 50;
+const int hough_threshold = 100;
+const int min_line_length = 40;
+const int max_line_gap = 5;
 
 // Find road lanes in an image
 void find_lanes(int, void*)
 {
 	// Convert to gray scale
-	cvtColor(input, gray_scale, COLOR_BGR2GRAY);
+	cvtColor(input, gray_scale, cv::COLOR_BGR2GRAY);
 
 	// Blur
-	blur(gray_scale, edges, Size(3, 3));
+	blur(gray_scale, edges, cv::Size(3, 3));
 
 	// Apply Canny algorithm to detect edges
-	Canny(edges, edges, lowThreshold, lowThreshold * canny_ratio, kernel_size);
+	Canny(edges, edges, low_threshold, low_threshold * canny_ratio, kernel_size);
 
 	// Select region of interest
 	bitwise_and(edges, mask, edges);
 
 	// Find lines using Hough transform
-	vector<Vec4i> lines;
+	std::vector<cv::Vec4i> lines;
 	HoughLinesP(edges, lines, rho, theta, hough_threshold, min_line_length, max_line_gap);
 
 	int left_count = 0;
@@ -58,7 +58,7 @@ void find_lanes(int, void*)
 	// Draw the lane lines
 	for (size_t i = 0; i < lines.size(); i++)
 	{
-		Vec4i l = lines[i];
+		cv::Vec4i l = lines[i];
 		const double x1 = l[0];
 		const double y1 = l[1];
 		const double x2 = l[2];
@@ -105,7 +105,7 @@ void find_lanes(int, void*)
 
 	// Find new points of extended left and right lines
 	const int bottom = input.rows;
-	const int top = input.rows * LANE_ROI_HEIGHT;
+	const int top = LANE_ROI_HEIGHT * input.rows;
 
 	const int left_line_x1 = (bottom - left_b) / left_slope;
 	const int left_line_y1 = bottom;
@@ -117,15 +117,15 @@ void find_lanes(int, void*)
 	const int right_line_y2 = top;
 
 	// Draw left and right lines
-	line(output, Point(left_line_x1, left_line_y1), Point(left_line_x2, left_line_y2), Scalar(0, 0, 255), 3, LINE_AA);
-	line(output, Point(right_line_x1, right_line_y1), Point(right_line_x2, right_line_y2), Scalar(0, 0, 255), 3, LINE_AA);
+	line(output, cv::Point(left_line_x1, left_line_y1), cv::Point(left_line_x2, left_line_y2), cv::Scalar(0, 0, 255), 3, cv::LINE_AA);
+	line(output, cv::Point(right_line_x1, right_line_y1), cv::Point(right_line_x2, right_line_y2), cv::Scalar(0, 0, 255), 3, cv::LINE_AA);
 
 	// Draw direction line
 	const int center_line_x1 = input.cols / 2;
 	const int center_line_y1 = bottom;
 	const int center_line_x2 = (left_line_x2 + right_line_x2) / 2;
 	const int center_line_y2 = top;
-	line(output, Point(center_line_x1, center_line_y1), Point(center_line_x2, center_line_y2), Scalar(0, 0, 0), 3);
+	line(output, cv::Point(center_line_x1, center_line_y1), cv::Point(center_line_x2, center_line_y2), cv::Scalar(0, 0, 0), 3);
 }
 
 // Select road lanes region of interest
@@ -133,16 +133,16 @@ void set_lane_roi(const cv::Size &size)
 {
 	const size_t rows = size.height;
 	const size_t cols = size.width;
-	mask = Mat::zeros(rows, cols, CV_8UC1);
+	mask = cv::Mat::zeros(rows, cols, CV_8UC1);
 
-	Point points[1][4];
-	points[0][0] = Point(0, rows);
-	points[0][1] = Point(cols * 0.45, rows * LANE_ROI_HEIGHT);
-	points[0][2] = Point(cols * 0.55, rows * LANE_ROI_HEIGHT);
-	points[0][3] = Point(cols, rows);
-	const Point* point_list[1] = { points[0] };
+	cv::Point points[1][4];
+	points[0][0] = cv::Point(0, rows);
+	points[0][1] = cv::Point(cols * 0.45, rows * LANE_ROI_HEIGHT);
+	points[0][2] = cv::Point(cols * 0.55, rows * LANE_ROI_HEIGHT);
+	points[0][3] = cv::Point(cols, rows);
+	const cv::Point* point_list[1] = { points[0] };
 
 	int num_points = 4;
 	const int num_polygons = 1;
-	fillPoly(mask, point_list, &num_points, num_polygons, Scalar(255));
+	fillPoly(mask, point_list, &num_points, num_polygons, cv::Scalar(255));
 }
