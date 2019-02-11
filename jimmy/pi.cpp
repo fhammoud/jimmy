@@ -20,7 +20,7 @@ void pi_init()
 {
 	// Initialize wiring pi
 	std::cout << "Initializing Raspberry Pi modules\n";
-	wiringPiSetupSys();
+	wiringPiSetupGpio();
 
 	// Set pin modes
 	std::cout << "Setting pin modes\n";
@@ -63,27 +63,12 @@ void servo_init()
 	// Set servo to minimum angle
 	softPwmWrite(SERVO, 15);
 	delay(1000);
-
-	// Make servo rotate from minimum angle to maximum angle
-	for (int i = 15; i <= 20; i++) {
-		softPwmWrite(SERVO, i);
-		delay(200);
-	}
-
-	// Make servo rotate from maximum angle to minimum angle
-	for (int i = 20; i >= 10; i--) {
-		softPwmWrite(SERVO, i);
-		delay(200);
-	}
-
-	// Set servo to neutral position
-	softPwmWrite(SERVO, 15);
-	delay(1000);
 }
 
 // Initialize motor
 void motor_init()
 {
+	pwmSetMode(PWM_MODE_MS);
 	pwmSetClock(384); // Clock at 50kHz (20us tick)
 	pwmSetRange(1000); // Range at 1000 ticks (20ms)
 
@@ -132,4 +117,22 @@ double get_distance()
 
 	// Return distance
 	return elapsed * 17000;
+}
+
+// Move car fwd/rev
+void move()
+{
+	pwmWrite(MOTOR, 82);
+}
+
+// Stop car
+void stop()
+{
+	pwmWrite(MOTOR, 75);
+}
+
+// Turn car left/right
+void turn(const int& angle)
+{
+	softPwmWrite(SERVO, angle);
 }

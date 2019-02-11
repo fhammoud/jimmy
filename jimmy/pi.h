@@ -14,3 +14,12 @@ void set_light(const int& mode);
 
 // Get distance reading from ultrasonic sensor
 double get_distance();
+
+// Move car fwd/rev
+void move();
+
+// Stop car
+void stop();
+
+// Turn car left/right
+void turn(const int& angle);
